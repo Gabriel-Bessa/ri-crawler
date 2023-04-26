@@ -2,6 +2,8 @@ import json
 
 import scrapy
 import urllib.parse
+import uuid
+
 
 def getIndex(index):
     return str(index + 1)
@@ -31,11 +33,10 @@ class ScieloSpider(scrapy.Spider):
         for i, item in enumerate(response.xpath("//div[@class='results']/div[@class='item']/div[2]")):
             title = item.xpath(f"(//div[@class='line']//strong)[{getIndex(i)}]/text()").extract()
             link = item.xpath(f"(//img[@data-toggle='tooltip']/following-sibling::a)[{getIndex(i)}]/@href").get()
-            authors = item.xpath(
-                f"(//div[@class='line']/following-sibling::div[@class='line authors'])[{getIndex(i)}]//a[@class='author']/text()").extract()
-            authorsLinks = item.xpath(
-                f"(//div[@class='line']/following-sibling::div[@class='line authors'])[{getIndex(i)}]//a[@class='author']/@href").get()
+            authors = item.xpath(f"(//div[@class='line']/following-sibling::div[@class='line authors'])[{getIndex(i)}]//a[@class='author']/text()").extract()
+            authorsLinks = item.xpath(f"(//div[@class='line']/following-sibling::div[@class='line authors'])[{getIndex(i)}]//a[@class='author']/@href").get()
             items.append({
+                'id': str(uuid.uuid4()),
                 'title': title,
                 'link': link,
                 'authors': authors,
