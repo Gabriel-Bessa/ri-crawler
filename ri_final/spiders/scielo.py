@@ -3,16 +3,25 @@ import json
 import scrapy
 import urllib.parse
 import uuid
-
+import os
 
 def getIndex(index):
     return str(index + 1)
 
 
+def isFileEmpty(path):
+    return os.path.getsize(path) == 0
+
 def save(items):
-    f = open(f"response.json", 'a+')
+    demiliter = "#|#"
+    path = "response.csv"
+    f = open(path, 'a+')
+
+    if isFileEmpty(path):
+        f.write(f"id{demiliter}title{demiliter}link{demiliter}authors{demiliter}authorsLinks\n")
+
     for item in items:
-        f.write(json.dumps(item) + "\n")
+        f.write(f"{item['id']}{demiliter}{item['title']}{demiliter}{item['link']}{demiliter}{item['authors']}{demiliter}{item['authorsLinks']}\n")
     f.close()
 
 
