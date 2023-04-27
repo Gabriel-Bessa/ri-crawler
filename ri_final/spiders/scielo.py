@@ -14,7 +14,7 @@ def isFileEmpty(path):
 
 def save(items):
     demiliter = "#"
-    path = "response.csv"
+    path = "../response.csv"
     f = open(path, 'a+')
 
     if isFileEmpty(path):
