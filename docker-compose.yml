@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  ri-ms-crawler:
+    image: gabrielbessadev/ri-ms-crawler
+    ports:
+      - 8000:8000
+    networks:
+      - ri_final
+  ri-ms-spring:
+    image: gabrielbessadev/ri-ms-spring
+    ports:
+      - 8080:8080
+    networks:
+      - ri_final
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ri_final
+    ports:
+      - "27017:27017"
+    networks:
+      - ri_final
+  elasticsearch:
+    image: elasticsearch:8.5.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - "ES_JAVA_OPTS=-Xms256m -Xmx1024m"
+      - "xpack.security.enabled=false"
+      - "discovery.type=single-node"
+      - "Enetwork.host=0.0.0.0"
+      - "cluster.routing.allocation.disk.threshold_enabled=true"
+      - "cluster.routing.allocation.disk.watermark.low=2gb"
+      - "cluster.routing.allocation.disk.watermark.high=1gb"
+      - "cluster.routing.allocation.disk.watermark.flood_stage=512mb"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin=http://localhost:9000"
+    networks:
+      - ri_final
+
+networks:
+  ri_final:

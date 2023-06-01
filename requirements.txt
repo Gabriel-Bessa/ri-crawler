@@ -1,0 +1,5 @@
+fastapi~=0.95.1
+pydantic>=1.8.0,<2.0.0
+uvicorn>=0.22.0
+Scrapy~=2.5.1
+requests~=2.25.1

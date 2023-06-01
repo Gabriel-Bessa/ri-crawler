@@ -5,6 +5,8 @@ import urllib.parse
 import uuid
 import os
 
+demiliter = "#"
+
 def getIndex(index):
     return str(index + 1)
 
@@ -13,7 +15,6 @@ def isFileEmpty(path):
     return os.path.getsize(path) == 0
 
 def save(items):
-    demiliter = "#"
     path = "../response.csv"
     f = open(path, 'a+')
 
@@ -33,6 +34,10 @@ def getNextUrl(url):
     return url_parts._replace(query=urllib.parse.urlencode(query)).geturl()
 
 
+def removeDelimiter(text):
+    return text.replace(demiliter, "")
+
+
 class ScieloSpider(scrapy.Spider):
     name = 'scielo'
     start_urls = ['https://search.scielo.org/?fb=&q=&lang=pt&count=100&from=1&output=site&sort=&format=summary&page=1&where=&filter%5Bin%5D%5B%5D=scl&filter%5Bla%5D%5B%5D=pt']
@@ -40,7 +45,7 @@ class ScieloSpider(scrapy.Spider):
     def parse(self, response):
         items = []
         for i, item in enumerate(response.xpath("//div[@class='results']/div[@class='item']/div[2]")):
-            title = item.xpath(f"(//div[@class='line']//strong)[{getIndex(i)}]/text()").extract()
+            title = list(map(removeDelimiter, item.xpath(f"(//div[@class='line']//strong)[{getIndex(i)}]/text()").extract()))
             link = item.xpath(f"(//img[@data-toggle='tooltip']/following-sibling::a)[{getIndex(i)}]/@href").get()
             authors = item.xpath(f"(//div[@class='line']/following-sibling::div[@class='line authors'])[{getIndex(i)}]//a[@class='author']/text()").extract()
             authorsLinks = item.xpath(f"(//div[@class='line']/following-sibling::div[@class='line authors'])[{getIndex(i)}]//a[@class='author']/@href").extract()
